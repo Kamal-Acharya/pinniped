@@ -1,0 +1,15 @@
+pinniped:
+  name: local-user-authenticator
+  namespace: test
+  replicas: 1
+  labels:
+    app: local-user-authenticator
+  service:
+    port: 443
+    targetPort: 8443 
+    type: ClusterIP 
+
+
+
+
+    

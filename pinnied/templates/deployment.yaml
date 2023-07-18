@@ -1,0 +1,40 @@
+piVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Values.pinniped.name}}
+  namespace: {{ .Values.pinniped.namespace }}
+  labels:
+   {{- if .Values.pinniped.labels }}
+{{ toYaml .Values.pinniped.labels | indent 4 }}
+    {{- end }}
+spec:
+  replicas: {{.Values.pinniped.replicas}}
+  selector:
+    matchLabels:
+      {{- if .Values.pinniped.labels }}
+{{ toYaml .Values.pinniped.labels | indent 6 }}
+    {{- end }}
+  template:
+    metadata:
+      labels:
+        app: local-user-authenticator
+    spec:
+      securityContext:
+        runAsUser: 65532
+        runAsGroup: 65532
+      serviceAccountName: {{.Values.pinniped.name}}
+      containers:
+      - name: local-user-authenticator
+        image: projects.registry.vmware.com/pinniped/pinniped-server:v0.24.0@sha256:82a129cb8b21d34933cea6792af0d1b6fe0ff44ece6229a49d3f5c972dea9d86
+        imagePullPolicy: IfNotPresent
+        command:
+        - local-user-authenticator
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          seccompProfile:
+            type: RuntimeDefault

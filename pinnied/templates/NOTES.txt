@@ -1,0 +1,2 @@
+
+You have install the pinniped helm chart sucessfully

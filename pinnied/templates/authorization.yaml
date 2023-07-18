@@ -1,0 +1,31 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Values.pinniped.name}}
+  namespace: {{ .Values.pinniped.namespace}}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Values.pinniped.name}}
+  namespace: {{ .Values.pinniped.namespace}}
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.pinniped.name}}
+  namespace: {{ .Values.pinniped.namespace}}
+roleRef:
+  kind: Role
+  name: {{ .Values.pinniped.name}}
+  apiGroup: rbac.authorization.k8s.io

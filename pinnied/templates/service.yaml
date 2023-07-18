@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Values.pinniped.name}}
+  namespace: {{.Values.pinniped.namespace}}
+  labels:
+    {{- if .Values.pinniped.labels }}
+{{ toYaml .Values.pinniped.labels | indent 4 }}
+    {{- end }}
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
+spec:
+{{- with .Values.pinniped.service }} 
+  type: {{.type}}
+  selector:
+    app: local-user-authenticator  
+  ports:
+  - protocol: TCP
+    port: {{ .port}}
+    targetPort: {{.targetPort}}
+  {{- end}}  
